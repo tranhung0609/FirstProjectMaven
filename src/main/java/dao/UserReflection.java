@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserReflection implements DAOInterface<User> {
@@ -162,7 +163,33 @@ try {
     }
 
     @Override
-    public User select(int id) {
-        return null;
+    public User selectById(int id) {
+        User result = null;
+        try{
+            Connection connection = JDBCUtil.getConnection();
+            Class userClass= User.class;
+            Annotation annotation = userClass.getAnnotation(UserAnnotation.class);
+            UserAnnotation userAnnotation = null;
+            if (annotation instanceof UserAnnotation) {
+                userAnnotation = (UserAnnotation) annotation;
+            }
+
+            String sql = "SELECT * FROM teststatement.user_infomation WHERE UserID = '"+id+"'";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int idUser = resultSet.getInt("UserID");
+                String username = resultSet.getString("Username");
+                String password = resultSet.getString("Password");
+                result = new User(idUser, username, password);
+            }
+            System.out.println("Bạn đã thực thi: "+ sql);
+            System.out.println("Có kết quả là : "+ result);
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return result;
     }
 }
