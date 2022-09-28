@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserReflection implements DAOInterface<User> {
 
@@ -190,6 +192,35 @@ try {
         }catch (SQLException e){
             e.printStackTrace();
         }
+        return result;
+    }
+
+    public List<User> sellectAll(){
+        List<User> result = new ArrayList<>();
+        try {
+            Connection connection = JDBCUtil.getConnection();
+            Class userClass= User.class;
+            Annotation annotation = userClass.getAnnotation(UserAnnotation.class);
+            UserAnnotation userAnnotation = null;
+            if (annotation instanceof UserAnnotation) {
+                userAnnotation = (UserAnnotation) annotation;
+            }
+
+            String sql = "SELECT * FROM teststatement.user_infomation";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int idUser = resultSet.getInt("UserID");
+                String username = resultSet.getString("Username");
+                String password = resultSet.getString("Password");
+                result.add(new User(idUser, username, password));
+            }
+            System.out.println("Bạn đã thực thi: "+ sql);
+            System.out.println("Có kết quả là : ");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return result;
     }
 }

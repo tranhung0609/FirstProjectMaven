@@ -5,6 +5,7 @@ import dao.UserReflection;
 import model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -41,5 +42,11 @@ public class Main {
         User user5 = new User();
         user5.setId(2);
         UserReflection.getInstance().selectById(user5.getId());
+
+        System.out.println("--------------------------------------------------");
+        List<User> list = UserReflection.getInstance().sellectAll();
+        for (User user : list) {
+            System.out.println(user.toString());
+        }
     }
 }
