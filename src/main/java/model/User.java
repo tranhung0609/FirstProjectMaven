@@ -1,5 +1,9 @@
 package model;
 
+import annotation.UserAnnotation;
+
+@UserAnnotation(idUser = "idUser", username = "username", password = "password")
+
 public class User {
     private int id;
     private String username;
